@@ -16,6 +16,8 @@
 
 package com.github.ykiselev.buffers;
 
+import com.github.ykiselev.buffers.pool.BufferPool;
+
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -84,7 +86,7 @@ public final class SimpleBuffers implements Buffers {
     }
 
     private ByteBuffer acquire(int size) {
-        final ByteBuffer result = pool.acquire(size, timeoutMillis);
+        final ByteBuffer result = pool.acquire(size);
         if (result == null) {
             throw new IllegalStateException("Unable to acquire a buffer of size " + size);
         }

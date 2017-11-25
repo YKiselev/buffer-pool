@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.buffers;
+package com.github.ykiselev.buffers.factories;
 
+import com.github.ykiselev.buffers.factories.BufferFactory;
+import com.github.ykiselev.buffers.factories.OffHeapByteBufferFactory;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;

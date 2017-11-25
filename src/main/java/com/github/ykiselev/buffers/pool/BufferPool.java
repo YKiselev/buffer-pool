@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.buffers;
+package com.github.ykiselev.buffers.pool;
 
 import java.nio.Buffer;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author Yuriy Kiselev (uze@yandex.ru).
@@ -26,18 +25,9 @@ public abstract class BufferPool<T extends Buffer> {
 
     /**
      * @param size   the minimum required size of buffer in bytes
-     * @param millis the timeout value in milliseconds
-     * @return the buffer of requested size or {@code null} if timeout reached.
+     * @return the buffer of requested size or {@code null} if new buffer cannot be allocated.
      */
-    public abstract T acquire(int size, int millis);
-
-    public final T acquireOrThrow(int size, int millis) throws TimeoutException {
-        final T result = acquire(size, millis);
-        if (result == null) {
-            throw new TimeoutException();
-        }
-        return result;
-    }
+    public abstract T acquire(int size);
 
     /**
      * @param buffer the buffer to return to pool

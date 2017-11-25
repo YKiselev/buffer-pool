@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.buffers;
+package com.github.ykiselev.buffers.factories;
 
 /**
  * @param <T>

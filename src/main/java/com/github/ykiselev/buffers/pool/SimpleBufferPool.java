@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.buffers;
+package com.github.ykiselev.buffers.pool;
+
+import com.github.ykiselev.buffers.factories.BufferFactory;
 
 import java.nio.Buffer;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Simple implementation of {@link BufferPool}.
- * This class is thread-safe.
+ * This class is not thread-safe.
  * <p>
  * Created by Y.Kiselev on 04.06.2016.
  */
@@ -38,7 +40,7 @@ public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
 
     private final BufferFactory<T> factory;
 
-    private volatile int counter;
+    private int counter;
 
     public SimpleBufferPool(int max, BufferFactory<T> factory) {
         this.max = max;
@@ -46,40 +48,28 @@ public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
     }
 
     @Override
-    public T acquire(int size, int millis) {
-        final long deadline = System.currentTimeMillis() + millis;
-        do {
-            final T result = tryAcquire(size);
-            if (result != null) {
-                return result;
-            }
-        } while (System.currentTimeMillis() < deadline);
-        return null;
-    }
-
-    @Override
-    public synchronized void release(T buffer) {
-        pool.add(buffer);
-    }
-
-    private synchronized T tryAcquire(int aligned) {
-        T result = findExisting(aligned);
+    public T acquire(int size) {
+        T result = findExisting(size);
         if (result == null) {
             if (counter == max) {
                 removeSmallest();
             }
             if (counter < max) {
-                result = factory.create(aligned);
+                result = factory.create(size);
                 counter++;
             }
         }
         return result;
     }
 
+    @Override
+    public void release(T buffer) {
+        pool.add(buffer);
+    }
+
     private void removeSmallest() {
         pool.stream()
-                .sorted(Comparator.comparingInt(Buffer::capacity))
-                .findFirst()
+                .min(Comparator.comparingInt(Buffer::capacity))
                 .ifPresent(b -> {
                     if (pool.remove(b)) {
                         counter--;
@@ -87,11 +77,11 @@ public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
                 });
     }
 
-    private T findExisting(int aligned) {
+    private T findExisting(int size) {
         final Iterator<T> it = pool.iterator();
         while (it.hasNext()) {
             final T buffer = it.next();
-            if (aligned <= buffer.capacity()) {
+            if (size <= buffer.capacity()) {
                 it.remove();
                 return buffer;
             }

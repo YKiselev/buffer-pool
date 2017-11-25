@@ -16,6 +16,7 @@
 
 package com.github.ykiselev.buffers;
 
+import com.github.ykiselev.buffers.pool.BufferPool;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -39,7 +40,7 @@ public class SimpleBuffersTest {
     private final Buffers buffers = new SimpleBuffers(
             new BufferPool<ByteBuffer>() {
                 @Override
-                public ByteBuffer acquire(int size, int millis) {
+                public ByteBuffer acquire(int size) {
                     if (size > buffer.capacity()) {
                         throw new IllegalArgumentException("Out of memory!");
                     }
