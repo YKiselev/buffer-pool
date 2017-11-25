@@ -21,6 +21,7 @@
     <groupId>com.github.ykiselev</groupId>
     <artifactId>buffer-pool</artifactId>
     <version>1.1-SNAPSHOT</version>
+    <name>buffer-pool</name>
     <description>A simple object pool fro byte buffers</description>
     <url>https://github.com/YKiselev/pool</url>
 
