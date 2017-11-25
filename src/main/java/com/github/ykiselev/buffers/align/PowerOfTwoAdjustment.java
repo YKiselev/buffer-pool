@@ -17,26 +17,24 @@
 package com.github.ykiselev.buffers.align;
 
 /**
- * Aligns supplied value tn next multiple of {@code base}
- * <p>
+ * Aligns supplied value to the next power of two
+ *
  * Created by Y.Kiselev on 04.06.2016.
  */
-public final class MultipleOfAlignFunction implements AlignFunction {
-
-    private final int base;
-
-    public MultipleOfAlignFunction(int base) {
-        this.base = base;
-    }
+public final class PowerOfTwoAdjustment implements IntAdjustment {
 
     @Override
     public int apply(int value) {
-        final int aligned = this.base * (value / this.base);
-        if (aligned < value) {
-            value = aligned + this.base;
-        } else {
-            value = aligned;
+        if (value < 0) {
+            throw new IllegalArgumentException("Value should be positive!");
         }
+        value--;
+        value |= value >>> 1;
+        value |= value >>> 2;
+        value |= value >>> 4;
+        value |= value >>> 8;
+        value |= value >>> 16;
+        value++;
         return value;
     }
 }

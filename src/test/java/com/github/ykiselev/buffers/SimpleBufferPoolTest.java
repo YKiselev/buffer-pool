@@ -16,8 +16,8 @@
 
 package com.github.ykiselev.buffers;
 
-import com.github.ykiselev.buffers.align.AlignFunction;
-import com.github.ykiselev.buffers.align.PowerOfTwoAlignFunction;
+import com.github.ykiselev.buffers.align.IntAdjustment;
+import com.github.ykiselev.buffers.align.PowerOfTwoAdjustment;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -42,12 +42,12 @@ import static org.junit.Assert.assertNull;
  */
 public class SimpleBufferPoolTest {
 
-    private final AlignFunction alignFunction = new PowerOfTwoAlignFunction();
+    private final IntAdjustment adjustment = new PowerOfTwoAdjustment();
 
     private final BufferPool<ByteBuffer> pool = new SimpleBufferPool<>(
             2,
             s -> ByteBuffer.allocate(
-                    alignFunction.apply(s)
+                    adjustment.apply(s)
             )
     );
 

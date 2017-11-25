@@ -16,7 +16,6 @@
 
 package com.github.ykiselev.buffers.align;
 
-import com.github.ykiselev.buffers.align.MultipleOfAlignFunction;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -24,15 +23,27 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Y.Kiselev on 04.06.2016.
  */
-public class MultipleOfAlignFunctionTest {
+public class PowerOfTwoAdjustmentTest {
 
-    private final MultipleOfAlignFunction function = new MultipleOfAlignFunction(10);
+    private final PowerOfTwoAdjustment fn = new PowerOfTwoAdjustment();
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailForNegative() throws Exception {
+        fn.apply(-1);
+    }
 
     @Test
-    public void shouldBeMultipleOfTen() throws Exception {
-        assertEquals(10, function.apply(1));
-        assertEquals(10, function.apply(3));
-        assertEquals(20, function.apply(11));
-        assertEquals(30, function.apply(22));
+    public void shouldWork() throws Exception {
+        assertEquals(0, fn.apply(0));
+        assertEquals(1, fn.apply(1));
+        assertEquals(2, fn.apply(2));
+        assertEquals(4, fn.apply(3));
+        assertEquals(16, fn.apply(9));
+        assertEquals(32, fn.apply(17));
+        assertEquals(64, fn.apply(51));
+        assertEquals(128, fn.apply(100));
+        assertEquals(256, fn.apply(200));
+        assertEquals(512, fn.apply(477));
     }
+
 }

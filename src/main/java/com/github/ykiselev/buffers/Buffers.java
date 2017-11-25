@@ -30,26 +30,26 @@ import java.nio.ShortBuffer;
  */
 public interface Buffers {
 
-    PooledBuffer<ByteBuffer> byteBuffer(int size);
+    Pooled<ByteBuffer> byteBuffer(int size);
 
-    PooledBuffer<CharBuffer> charBuffer(int size);
+    Pooled<CharBuffer> charBuffer(int size);
 
-    PooledBuffer<ShortBuffer> shortBuffer(int size);
+    Pooled<ShortBuffer> shortBuffer(int size);
 
-    PooledBuffer<IntBuffer> intBuffer(int size);
+    Pooled<IntBuffer> intBuffer(int size);
 
-    PooledBuffer<LongBuffer> longBuffer(int size);
+    Pooled<LongBuffer> longBuffer(int size);
 
-    PooledBuffer<FloatBuffer> floatBuffer(int size);
+    Pooled<FloatBuffer> floatBuffer(int size);
 
-    PooledBuffer<DoubleBuffer> doubleBuffer(int size);
+    Pooled<DoubleBuffer> doubleBuffer(int size);
 
     /**
      * Pooled buffer. Provides access to encapsulated buffer and returns buffer into pool when closed.
      *
      * @param <T> the buffer type
      */
-    interface PooledBuffer<T extends Buffer> extends AutoCloseable {
+    interface Pooled<T extends Buffer> extends AutoCloseable {
 
         T buffer();
 

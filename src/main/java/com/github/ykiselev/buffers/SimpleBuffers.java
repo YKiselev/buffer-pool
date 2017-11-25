@@ -42,43 +42,43 @@ public final class SimpleBuffers implements Buffers {
     }
 
     @Override
-    public PooledBuffer<ByteBuffer> byteBuffer(int size) {
+    public Pooled<ByteBuffer> byteBuffer(int size) {
         final ByteBuffer buffer = acquire(size);
         return createPooled(buffer, buffer);
     }
 
     @Override
-    public PooledBuffer<FloatBuffer> floatBuffer(int size) {
+    public Pooled<FloatBuffer> floatBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Float.BYTES);
         return createPooled(buffer, buffer.asFloatBuffer());
     }
 
     @Override
-    public PooledBuffer<IntBuffer> intBuffer(int size) {
+    public Pooled<IntBuffer> intBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Integer.BYTES);
         return createPooled(buffer, buffer.asIntBuffer());
     }
 
     @Override
-    public PooledBuffer<CharBuffer> charBuffer(int size) {
+    public Pooled<CharBuffer> charBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Character.BYTES);
         return createPooled(buffer, buffer.asCharBuffer());
     }
 
     @Override
-    public PooledBuffer<ShortBuffer> shortBuffer(int size) {
+    public Pooled<ShortBuffer> shortBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Short.BYTES);
         return createPooled(buffer, buffer.asShortBuffer());
     }
 
     @Override
-    public PooledBuffer<LongBuffer> longBuffer(int size) {
+    public Pooled<LongBuffer> longBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Long.BYTES);
         return createPooled(buffer, buffer.asLongBuffer());
     }
 
     @Override
-    public PooledBuffer<DoubleBuffer> doubleBuffer(int size) {
+    public Pooled<DoubleBuffer> doubleBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Double.BYTES);
         return createPooled(buffer, buffer.asDoubleBuffer());
     }
@@ -92,8 +92,8 @@ public final class SimpleBuffers implements Buffers {
         return result;
     }
 
-    private <T extends Buffer> PooledBuffer<T> createPooled(final ByteBuffer pooled, final T buffer) {
-        return new PooledBuffer<T>() {
+    private <T extends Buffer> Pooled<T> createPooled(final ByteBuffer pooled, final T buffer) {
+        return new Pooled<T>() {
 
             @Override
             public T buffer() {

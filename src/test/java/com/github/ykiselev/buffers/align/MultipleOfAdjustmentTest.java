@@ -23,27 +23,15 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Y.Kiselev on 04.06.2016.
  */
-public class AnchorAlignFunctionTest {
+public class MultipleOfAdjustmentTest {
 
-    private final AnchorAlignFunction function = new AnchorAlignFunction(
-            5, 10, 15, 25, 50
-    );
+    private final MultipleOfAdjustment function = new MultipleOfAdjustment(10);
 
     @Test
-    public void shouldAlignToAnchors() throws Exception {
-        assertEquals(5, function.apply(-100));
-        assertEquals(5, function.apply(0));
-        assertEquals(5, function.apply(3));
-        assertEquals(10, function.apply(7));
-        assertEquals(15, function.apply(11));
-        assertEquals(25, function.apply(16));
-        assertEquals(50, function.apply(26));
+    public void shouldBeMultipleOfTen() throws Exception {
+        assertEquals(10, function.apply(1));
+        assertEquals(10, function.apply(3));
+        assertEquals(20, function.apply(11));
+        assertEquals(30, function.apply(22));
     }
-
-    @Test
-    public void shouldRemainTheSame() throws Exception {
-        assertEquals(51, function.apply(51));
-        assertEquals(100, function.apply(100));
-    }
-
 }

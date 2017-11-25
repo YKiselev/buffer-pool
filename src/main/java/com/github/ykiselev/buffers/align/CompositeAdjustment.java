@@ -17,28 +17,20 @@
 package com.github.ykiselev.buffers.align;
 
 /**
- * Rounds supplied value to the next anchor or leaves as is if no anchor found
- * <p>
  * Created by Y.Kiselev on 04.06.2016.
  */
-public final class AnchorAlignFunction implements AlignFunction {
+public final class CompositeAdjustment implements IntAdjustment {
 
-    private final int[] anchors;
+    private final IntAdjustment[] functions;
 
-    /**
-     * @param anchors the sizes to snap to (array should be sorted in ascending order, i.e. {16, 32, 64})
-     */
-    public AnchorAlignFunction(int... anchors) {
-        this.anchors = anchors.clone();
+    public CompositeAdjustment(IntAdjustment... functions) {
+        this.functions = functions.clone();
     }
 
     @Override
     public int apply(int value) {
-        for (int anchor : this.anchors) {
-            if (value < anchor) {
-                value = anchor;
-                break;
-            }
+        for (IntAdjustment function : this.functions) {
+            value = function.apply(value);
         }
         return value;
     }

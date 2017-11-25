@@ -16,7 +16,6 @@
 
 package com.github.ykiselev.buffers.align;
 
-import com.github.ykiselev.buffers.align.PowerOfTwoAlignFunction;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -24,27 +23,27 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Y.Kiselev on 04.06.2016.
  */
-public class PowerOfTwoAlignFunctionTest {
+public class AnchorAdjustmentTest {
 
-    private final PowerOfTwoAlignFunction fn = new PowerOfTwoAlignFunction();
+    private final AnchorAdjustment function = new AnchorAdjustment(
+            5, 10, 15, 25, 50
+    );
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailForNegative() throws Exception {
-        fn.apply(-1);
+    @Test
+    public void shouldAlignToAnchors() throws Exception {
+        assertEquals(5, function.apply(-100));
+        assertEquals(5, function.apply(0));
+        assertEquals(5, function.apply(3));
+        assertEquals(10, function.apply(7));
+        assertEquals(15, function.apply(11));
+        assertEquals(25, function.apply(16));
+        assertEquals(50, function.apply(26));
     }
 
     @Test
-    public void shouldWork() throws Exception {
-        assertEquals(0, fn.apply(0));
-        assertEquals(1, fn.apply(1));
-        assertEquals(2, fn.apply(2));
-        assertEquals(4, fn.apply(3));
-        assertEquals(16, fn.apply(9));
-        assertEquals(32, fn.apply(17));
-        assertEquals(64, fn.apply(51));
-        assertEquals(128, fn.apply(100));
-        assertEquals(256, fn.apply(200));
-        assertEquals(512, fn.apply(477));
+    public void shouldRemainTheSame() throws Exception {
+        assertEquals(51, function.apply(51));
+        assertEquals(100, function.apply(100));
     }
 
 }

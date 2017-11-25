@@ -17,21 +17,11 @@
 package com.github.ykiselev.buffers.align;
 
 /**
- * Created by Y.Kiselev on 04.06.2016.
+ * A function to adjust passed integer value in some way.
+ *
+ * @author Yuriy Kiselev (uze@yandex.ru).
  */
-public final class CompositeAlignFunction implements AlignFunction {
+public interface IntAdjustment {
 
-    private final AlignFunction[] functions;
-
-    public CompositeAlignFunction(AlignFunction... functions) {
-        this.functions = functions.clone();
-    }
-
-    @Override
-    public int apply(int value) {
-        for (AlignFunction function : this.functions) {
-            value = function.apply(value);
-        }
-        return value;
-    }
+    int apply(int value);
 }

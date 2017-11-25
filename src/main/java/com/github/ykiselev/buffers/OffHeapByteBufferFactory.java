@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.buffers.align;
+package com.github.ykiselev.buffers;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
- *
+ * @author Yuriy Kiselev (uze@yandex.ru).
  */
-public interface AlignFunction {
+public final class OffHeapByteBufferFactory implements BufferFactory<ByteBuffer> {
 
-    int apply(int value);
+    @Override
+    public ByteBuffer create(int size) {
+        return ByteBuffer.allocateDirect(size)
+                .order(ByteOrder.nativeOrder());
+    }
 }

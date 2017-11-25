@@ -19,6 +19,7 @@ package com.github.ykiselev.buffers;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -55,7 +56,7 @@ public class SimpleBuffersTest {
 
     @Test
     public void shouldAllocateByteBuffer() throws Exception {
-        try (Buffers.PooledBuffer<ByteBuffer> pb = buffers.byteBuffer(10)) {
+        try (Buffers.Pooled<ByteBuffer> pb = buffers.byteBuffer(10)) {
             final ByteBuffer buffer = pb.buffer();
             assertEquals(0, buffer.position());
             assertEquals(buffer.limit(), buffer.capacity());
@@ -64,36 +65,43 @@ public class SimpleBuffersTest {
     }
 
     @Test
+    public void shouldAllocateCharBuffer() throws Exception {
+        try (Buffers.Pooled<CharBuffer> pb = buffers.charBuffer(8)) {
+            assertTrue(pb.buffer().capacity() >= 8);
+        }
+    }
+
+    @Test
     public void shouldAllocateShortBuffer() throws Exception {
-        try (Buffers.PooledBuffer<ShortBuffer> pb = buffers.shortBuffer(8)) {
+        try (Buffers.Pooled<ShortBuffer> pb = buffers.shortBuffer(8)) {
             assertTrue(pb.buffer().capacity() >= 8);
         }
     }
 
     @Test
     public void shouldAllocateIntBuffer() throws Exception {
-        try (Buffers.PooledBuffer<IntBuffer> pb = buffers.intBuffer(4)) {
+        try (Buffers.Pooled<IntBuffer> pb = buffers.intBuffer(4)) {
             assertTrue(pb.buffer().capacity() >= 4);
         }
     }
 
     @Test
     public void shouldAllocateLongBuffer() throws Exception {
-        try (Buffers.PooledBuffer<LongBuffer> pb = buffers.longBuffer(2)) {
+        try (Buffers.Pooled<LongBuffer> pb = buffers.longBuffer(2)) {
             assertTrue(pb.buffer().capacity() >= 2);
         }
     }
 
     @Test
     public void shouldAllocateFloatBuffer() throws Exception {
-        try (Buffers.PooledBuffer<FloatBuffer> pb = buffers.floatBuffer(4)) {
+        try (Buffers.Pooled<FloatBuffer> pb = buffers.floatBuffer(4)) {
             assertTrue(pb.buffer().capacity() >= 4);
         }
     }
 
     @Test
     public void shouldAllocateDoubleBuffer() throws Exception {
-        try (Buffers.PooledBuffer<DoubleBuffer> pb = buffers.doubleBuffer(2)) {
+        try (Buffers.Pooled<DoubleBuffer> pb = buffers.doubleBuffer(2)) {
             assertTrue(pb.buffer().capacity() >= 2);
         }
     }
