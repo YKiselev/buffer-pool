@@ -36,11 +36,8 @@ public final class SimpleBuffers implements Buffers {
 
     private final BufferPool<ByteBuffer> pool;
 
-    private final int timeoutMillis;
-
-    public SimpleBuffers(BufferPool<ByteBuffer> pool, int timeoutMillis) {
+    public SimpleBuffers(BufferPool<ByteBuffer> pool) {
         this.pool = requireNonNull(pool);
-        this.timeoutMillis = timeoutMillis;
     }
 
     @Override

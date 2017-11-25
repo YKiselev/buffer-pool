@@ -51,8 +51,7 @@ public class SimpleBuffersTest {
                 public void release(ByteBuffer b) {
                     assertEquals(buffer, b);
                 }
-            },
-            0
+            }
     );
 
     @Test
