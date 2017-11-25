@@ -51,7 +51,10 @@ public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
         T result = findExisting(size);
         if (result == null) {
             if (counter == max) {
-                removeSmallest();
+                if (!pool.isEmpty()) {
+                    pool.remove(0);
+                    counter--;
+                }
             }
             if (counter < max) {
                 result = factory.create(size);
@@ -64,25 +67,6 @@ public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
     @Override
     public void release(T buffer) {
         pool.add(buffer);
-    }
-
-    private void removeSmallest() {
-        final Iterator<T> it = pool.iterator();
-        T min = null;
-        int minIndex = -1;
-        int i = 0;
-        while (it.hasNext()) {
-            final T b = it.next();
-            if (min == null || b.capacity() < min.capacity()) {
-                min = b;
-                minIndex = i;
-            }
-            i++;
-        }
-        if (min != null) {
-            pool.remove(minIndex);
-            counter--;
-        }
     }
 
     private T findExisting(int size) {
