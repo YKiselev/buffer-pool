@@ -20,7 +20,6 @@ import com.github.ykiselev.buffers.factories.BufferFactory;
 
 import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,13 +67,22 @@ public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
     }
 
     private void removeSmallest() {
-        pool.stream()
-                .min(Comparator.comparingInt(Buffer::capacity))
-                .ifPresent(b -> {
-                    if (pool.remove(b)) {
-                        counter--;
-                    }
-                });
+        final Iterator<T> it = pool.iterator();
+        T min = null;
+        int minIndex = -1;
+        int i = 0;
+        while (it.hasNext()) {
+            final T b = it.next();
+            if (min == null || b.capacity() < min.capacity()) {
+                min = b;
+                minIndex = i;
+            }
+            i++;
+        }
+        if (min != null) {
+            pool.remove(minIndex);
+            counter--;
+        }
     }
 
     private T findExisting(int size) {

@@ -59,11 +59,11 @@ public class SimpleBufferPoolTest {
     @Test
     public void shouldRemoveSmallest() throws Exception {
         for (int i = 0, size = 2; i < 10; i++) {
-            final ByteBuffer b1 = this.pool.acquire(size);
+            final ByteBuffer b1 = pool.acquire(size);
             try {
                 assertEquals(size, b1.capacity());
             } finally {
-                this.pool.release(b1);
+                pool.release(b1);
             }
             size *= 2;
         }
