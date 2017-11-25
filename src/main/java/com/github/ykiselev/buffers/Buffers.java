@@ -14,32 +14,36 @@
  * limitations under the License.
  */
 
-package buffers;
+package com.github.ykiselev.buffers;
+
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 /**
- * Rounds supplied value to the next anchor or leaves as is if no anchor found
- * <p>
  * Created by Y.Kiselev on 04.06.2016.
  */
-public final class AnchorAlignFunction implements BufferPool.AlignFunction {
+public interface Buffers {
 
-    private final int[] anchors;
+    PooledBuffer<ByteBuffer> byteBuffer(int size);
+
+    PooledBuffer<FloatBuffer> floatBuffer(int size);
+
+    PooledBuffer<IntBuffer> intBuffer(int size);
 
     /**
-     * @param anchors the sizes to snap to (array should be sorted in ascending order, i.e. {16, 32, 64})
+     * Pooled buffer. Provides access to encapsulated buffer and returns buffer into pool when closed.
+     *
+     * @param <T> the buffer type
      */
-    public AnchorAlignFunction(int... anchors) {
-        this.anchors = anchors.clone();
+    interface PooledBuffer<T extends Buffer> extends AutoCloseable {
+
+        T buffer();
+
+        @Override
+        void close();
     }
 
-    @Override
-    public int apply(int value) {
-        for (int anchor : this.anchors) {
-            if (value < anchor) {
-                value = anchor;
-                break;
-            }
-        }
-        return value;
-    }
+
 }

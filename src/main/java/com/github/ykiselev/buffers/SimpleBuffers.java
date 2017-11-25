@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package buffers;
-
-import com.google.common.base.Throwables;
-import org.uze.terra.editor.domain.Buffers;
+package com.github.ykiselev.buffers;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Y.Kiselev on 04.06.2016.
@@ -32,34 +28,35 @@ public final class SimpleBuffers implements Buffers {
 
     private final BufferPool<ByteBuffer> pool;
 
-    public SimpleBuffers(BufferPool<ByteBuffer> pool) {
+    private final int timeoutMillis;
+
+    public SimpleBuffers(BufferPool<ByteBuffer> pool, int timeoutMillis) {
         this.pool = pool;
+        this.timeoutMillis = timeoutMillis;
     }
 
     @Override
-    public PooledBuffer<ByteBuffer> acquireByteBuffer(int size) {
+    public PooledBuffer<ByteBuffer> byteBuffer(int size) {
         final ByteBuffer buffer = acquire(size);
         return createPooled(buffer, buffer);
     }
 
     @Override
-    public PooledBuffer<FloatBuffer> acquireFloatBuffer(int size) {
+    public PooledBuffer<FloatBuffer> floatBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Float.BYTES);
         return createPooled(buffer, buffer.asFloatBuffer());
     }
 
     @Override
-    public PooledBuffer<IntBuffer> acquireIntBuffer(int size) {
+    public PooledBuffer<IntBuffer> intBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Integer.BYTES);
         return createPooled(buffer, buffer.asIntBuffer());
     }
 
     private ByteBuffer acquire(int size) {
-        final ByteBuffer result;
-        try {
-            result = this.pool.acquire(size, 250);
-        } catch (TimeoutException e) {
-            throw Throwables.propagate(e);
+        final ByteBuffer result = pool.acquire(size, timeoutMillis);
+        if (result == null) {
+            throw new IllegalStateException("Unable to acquire a buffer of size " + size);
         }
         result.clear();
         return result;
@@ -75,7 +72,7 @@ public final class SimpleBuffers implements Buffers {
 
             @Override
             public void close() {
-                SimpleBuffers.this.pool.release(pooled);
+                pool.release(pooled);
             }
 
         };

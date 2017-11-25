@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package buffers;
+package com.github.ykiselev.buffers.align;
 
 /**
- * Aligns supplied value to the next power of two
- *
  * Created by Y.Kiselev on 04.06.2016.
  */
-public final class PowerOfTwoAlignFunction implements BufferPool.AlignFunction {
+public final class CompositeAlignFunction implements AlignFunction {
+
+    private final AlignFunction[] functions;
+
+    public CompositeAlignFunction(AlignFunction... functions) {
+        this.functions = functions.clone();
+    }
 
     @Override
     public int apply(int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("Value should be greater than zero!");
+        for (AlignFunction function : this.functions) {
+            value = function.apply(value);
         }
-        value--;
-        value |= value >>> 1;
-        value |= value >>> 2;
-        value |= value >>> 4;
-        value |= value >>> 8;
-        value |= value >>> 16;
-        value++;
         return value;
     }
 }

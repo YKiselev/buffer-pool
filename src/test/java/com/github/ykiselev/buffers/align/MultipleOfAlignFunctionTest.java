@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package buffers;
+package com.github.ykiselev.buffers.align;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import com.github.ykiselev.buffers.align.MultipleOfAlignFunction;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Y.Kiselev on 04.06.2016.
  */
-public interface Buffers {
+public class MultipleOfAlignFunctionTest {
 
-    PooledBuffer<ByteBuffer> acquireByteBuffer(int size);
+    private final MultipleOfAlignFunction function = new MultipleOfAlignFunction(10);
 
-    PooledBuffer<FloatBuffer> acquireFloatBuffer(int size);
-
-    PooledBuffer<IntBuffer> acquireIntBuffer(int size);
-
-    interface PooledBuffer<T extends Buffer> extends AutoCloseable {
-
-        T buffer();
-
-        @Override
-        void close();
+    @Test
+    public void shouldBeMultipleOfTen() throws Exception {
+        assertEquals(10, function.apply(1));
+        assertEquals(10, function.apply(3));
+        assertEquals(20, function.apply(11));
+        assertEquals(30, function.apply(22));
     }
 }

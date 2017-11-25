@@ -14,76 +14,63 @@
  * limitations under the License.
  */
 
-package buffers;
-
-import com.google.common.base.Stopwatch;
+package com.github.ykiselev.buffers;
 
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
+ * Simple implementation of {@link BufferPool}.
+ * This class is thread-safe.
+ * <p>
  * Created by Y.Kiselev on 04.06.2016.
  */
-public final class BufferPool<T extends Buffer> {
-
-    /**
-     *
-     */
-    public interface AlignFunction {
-
-        int apply(int value);
-    }
-
-    /**
-     * @param <T>
-     */
-    public interface BufferFactory<T> {
-
-        T create(int size);
-    }
+public final class SimpleBufferPool<T extends Buffer> extends BufferPool<T> {
 
     private final List<T> pool = new ArrayList<>();
 
     private final int max;
 
-    private final AlignFunction alignFunction;
-
     private final BufferFactory<T> factory;
 
     private volatile int counter;
 
-    public BufferPool(int max, AlignFunction alignFunction, BufferFactory<T> factory) {
+    public SimpleBufferPool(int max, BufferFactory<T> factory) {
         this.max = max;
-        this.alignFunction = alignFunction;
-        this.factory = factory;
+        this.factory = requireNonNull(factory);
     }
 
-    public T acquire(int size, int millis) throws TimeoutException {
-        final int aligned = this.alignFunction.apply(size);
-        final Stopwatch sw = Stopwatch.createStarted();
+    @Override
+    public T acquire(int size, int millis) {
+        final long deadline = System.currentTimeMillis() + millis;
         do {
-            final T result = tryAcquire(aligned);
+            final T result = tryAcquire(size);
             if (result != null) {
                 return result;
             }
-        } while (sw.elapsed(TimeUnit.MILLISECONDS) < millis);
-        throw new TimeoutException();
+        } while (System.currentTimeMillis() < deadline);
+        return null;
+    }
+
+    @Override
+    public synchronized void release(T buffer) {
+        pool.add(buffer);
     }
 
     private synchronized T tryAcquire(int aligned) {
         T result = findExisting(aligned);
         if (result == null) {
-            if (this.counter == this.max) {
+            if (counter == max) {
                 removeSmallest();
             }
-            if (this.counter < this.max) {
-                result = this.factory.create(aligned);
-                this.counter++;
+            if (counter < max) {
+                result = factory.create(aligned);
+                counter++;
             }
         }
         return result;
@@ -101,7 +88,7 @@ public final class BufferPool<T extends Buffer> {
     }
 
     private T findExisting(int aligned) {
-        final Iterator<T> it = this.pool.iterator();
+        final Iterator<T> it = pool.iterator();
         while (it.hasNext()) {
             final T buffer = it.next();
             if (aligned <= buffer.capacity()) {
@@ -110,10 +97,6 @@ public final class BufferPool<T extends Buffer> {
             }
         }
         return null;
-    }
-
-    public synchronized void release(T buffer) {
-        this.pool.add(buffer);
     }
 
 }

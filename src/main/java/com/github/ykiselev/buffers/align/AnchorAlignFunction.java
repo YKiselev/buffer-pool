@@ -14,23 +14,31 @@
  * limitations under the License.
  */
 
-package buffers;
+package com.github.ykiselev.buffers.align;
 
 /**
+ * Rounds supplied value to the next anchor or leaves as is if no anchor found
+ * <p>
  * Created by Y.Kiselev on 04.06.2016.
  */
-public final class CompositeAlignFunction implements BufferPool.AlignFunction {
+public final class AnchorAlignFunction implements AlignFunction {
 
-    private final BufferPool.AlignFunction[] functions;
+    private final int[] anchors;
 
-    public CompositeAlignFunction(BufferPool.AlignFunction... functions) {
-        this.functions = functions.clone();
+    /**
+     * @param anchors the sizes to snap to (array should be sorted in ascending order, i.e. {16, 32, 64})
+     */
+    public AnchorAlignFunction(int... anchors) {
+        this.anchors = anchors.clone();
     }
 
     @Override
     public int apply(int value) {
-        for (BufferPool.AlignFunction function : this.functions) {
-            value = function.apply(value);
+        for (int anchor : this.anchors) {
+            if (value < anchor) {
+                value = anchor;
+                break;
+            }
         }
         return value;
     }

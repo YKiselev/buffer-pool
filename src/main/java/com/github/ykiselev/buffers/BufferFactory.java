@@ -14,29 +14,12 @@
  * limitations under the License.
  */
 
-package buffers;
+package com.github.ykiselev.buffers;
 
 /**
- * Aligns supplied value tn next multiple of {@code base}
- * <p>
- * Created by Y.Kiselev on 04.06.2016.
+ * @param <T>
  */
-public final class MultipleOfAlignFunction implements BufferPool.AlignFunction {
+public interface BufferFactory<T> {
 
-    private final int base;
-
-    public MultipleOfAlignFunction(int base) {
-        this.base = base;
-    }
-
-    @Override
-    public int apply(int value) {
-        final int aligned = this.base * (value / this.base);
-        if (aligned < value) {
-            value = aligned + this.base;
-        } else {
-            value = aligned;
-        }
-        return value;
-    }
+    T create(int size);
 }
