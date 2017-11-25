@@ -18,8 +18,12 @@ package com.github.ykiselev.buffers;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Created by Y.Kiselev on 04.06.2016.
@@ -28,9 +32,17 @@ public interface Buffers {
 
     PooledBuffer<ByteBuffer> byteBuffer(int size);
 
-    PooledBuffer<FloatBuffer> floatBuffer(int size);
+    PooledBuffer<CharBuffer> charBuffer(int size);
+
+    PooledBuffer<ShortBuffer> shortBuffer(int size);
 
     PooledBuffer<IntBuffer> intBuffer(int size);
+
+    PooledBuffer<LongBuffer> longBuffer(int size);
+
+    PooledBuffer<FloatBuffer> floatBuffer(int size);
+
+    PooledBuffer<DoubleBuffer> doubleBuffer(int size);
 
     /**
      * Pooled buffer. Provides access to encapsulated buffer and returns buffer into pool when closed.

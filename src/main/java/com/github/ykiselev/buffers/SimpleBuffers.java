@@ -18,8 +18,14 @@ package com.github.ykiselev.buffers;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Created by Y.Kiselev on 04.06.2016.
@@ -31,7 +37,7 @@ public final class SimpleBuffers implements Buffers {
     private final int timeoutMillis;
 
     public SimpleBuffers(BufferPool<ByteBuffer> pool, int timeoutMillis) {
-        this.pool = pool;
+        this.pool = requireNonNull(pool);
         this.timeoutMillis = timeoutMillis;
     }
 
@@ -51,6 +57,30 @@ public final class SimpleBuffers implements Buffers {
     public PooledBuffer<IntBuffer> intBuffer(int size) {
         final ByteBuffer buffer = acquire(size * Integer.BYTES);
         return createPooled(buffer, buffer.asIntBuffer());
+    }
+
+    @Override
+    public PooledBuffer<CharBuffer> charBuffer(int size) {
+        final ByteBuffer buffer = acquire(size * Character.BYTES);
+        return createPooled(buffer, buffer.asCharBuffer());
+    }
+
+    @Override
+    public PooledBuffer<ShortBuffer> shortBuffer(int size) {
+        final ByteBuffer buffer = acquire(size * Short.BYTES);
+        return createPooled(buffer, buffer.asShortBuffer());
+    }
+
+    @Override
+    public PooledBuffer<LongBuffer> longBuffer(int size) {
+        final ByteBuffer buffer = acquire(size * Long.BYTES);
+        return createPooled(buffer, buffer.asLongBuffer());
+    }
+
+    @Override
+    public PooledBuffer<DoubleBuffer> doubleBuffer(int size) {
+        final ByteBuffer buffer = acquire(size * Double.BYTES);
+        return createPooled(buffer, buffer.asDoubleBuffer());
     }
 
     private ByteBuffer acquire(int size) {
